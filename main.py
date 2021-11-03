@@ -8,6 +8,8 @@ import numpy as np
 from timeit import default_timer as timer
 import math
 from numba import cuda
+import threading
+from threading import Thread
 
 
 def matrix_mul(A, B, C):
@@ -17,6 +19,28 @@ def matrix_mul(A, B, C):
             for k in range(A.shape[1]):
                 tmp += A[row, k] * B[k, col]
             C[row, col] = tmp
+
+
+def matrix_parallel_mul(start, end, A, B, C):
+    for i in range(start, end):
+        for j in range(B.shape[1]):
+            for k in range(A.shape[1]):
+                C[i][j] += int(A[i][k] * B[k][j])
+
+
+def thread_function(A, B, C):
+    num_of_threads = 10
+    thread_handle = []
+
+    for j in range(0, num_of_threads):
+        t = Thread(target=matrix_parallel_mul,
+                   args=(int((C.shape[0] / num_of_threads) * j), int((C.shape[0] / num_of_threads) * (j + 1)),
+                         A, B, C))
+        thread_handle.append(t)
+        t.start()
+
+    for j in range(0, num_of_threads):
+        thread_handle[j].join()
 
 
 def matrix_generator(size):
@@ -70,16 +94,22 @@ if __name__ == '__main__':
 
     martix1 = matrix_generator(size_1)
     matrix2 = matrix_generator(size_2)
-    # start = timer()
-    # matrix_mul(martix1, matrix2, result)
-    # result_time = timer() - start
-    # print(result)
+    start = timer()
+    matrix_mul(martix1, matrix2, result)
+    result_time = timer() - start
+    print(result)
 
-    # print(result_time)
+    print(result_time)
+    result2 = np.zeros((size_1[0], size_2[1]), dtype='int64')
+    start2 = timer()
+    thread_function(martix1, matrix2, result2)
+    result_time2 = timer() - start2
+    print(result2)
+    print(result_time2)
 
-    start1 = timer()
-    result1 = global_mem(martix1, matrix2)
-    result_time1 = timer() - start1
+    # start1 = timer()
+    # result1 = global_mem(martix1, matrix2)
+    # result_time1 = timer() - start1
 
-    print(result1)
-    print(result_time1)
+    # print(result1)
+    # print(result_time1)

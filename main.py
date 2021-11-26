@@ -1,14 +1,8 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import sys
-
 import numpy as np
 from timeit import default_timer as timer
 import math
 from numba import cuda
-import threading
 from threading import Thread
 
 
@@ -56,6 +50,7 @@ def get_matrix_size():
 def validate_matrix_size(size_1, size_2):
     return size_1[1] == size_2[0]
 
+
 def global_mem(A, B):
     C_global_mem = cuda.device_array((A.shape[0], B.shape[1]))
     threadsperblock = (32, 32)
@@ -82,7 +77,6 @@ def cuda_matrix_mul(A, B, C):
         C[row, col] = tmp
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     size_1 = get_matrix_size()
     size_2 = get_matrix_size()
@@ -110,6 +104,6 @@ if __name__ == '__main__':
     # start1 = timer()
     # result1 = global_mem(martix1, matrix2)
     # result_time1 = timer() - start1
-
+    #
     # print(result1)
     # print(result_time1)

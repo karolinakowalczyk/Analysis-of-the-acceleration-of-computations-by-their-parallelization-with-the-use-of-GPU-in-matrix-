@@ -29,7 +29,7 @@ def matrix_parallel_mul(start, end, A, B, C):
 
 
 def thread_function(A, B, C):
-    num_of_threads = 10
+    num_of_threads = 8
     thread_handle = []
 
     for j in range(0, num_of_threads):
@@ -107,9 +107,9 @@ if __name__ == '__main__':
     print(result2)
     print(result_time2)
 
-    # start1 = timer()
-    # result1 = global_mem(martix1, matrix2)
-    # result_time1 = timer() - start1
+    start3 = timer()
+    #result_time3 = global_mem(martix1, matrix2)
+    result_time3 = timer() - start3
 
-    # print(result1)
-    # print(result_time1)
+    #print(result)
+    print(result_time3)
